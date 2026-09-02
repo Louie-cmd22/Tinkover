@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="{{ url_for('static', path='/css/style.css') }}"
+>
+    <title>{% block title %}My Blog{% endblock %}</title>
+</head>
+
+<body>
+
+    {% block navigation %}
+        <header class="site-header">
+            <nav class="site-nav" aria-label="Main navigation">
+                <a class="site-logo" href="{{ url_for('homepage') }}">Tinkover</a>
+
+                <div class="nav-actions">
+                    {% if user %}
+                        <a class="avatar" href="{{ url_for('account_page') }}" aria-label="Account">
+                            {{ user.username[0]|upper }}
+                        </a>
+                    {% else %}
+                        <a class="btn btn-secondary btn-small" href="{{ url_for('login_page') }}">Log in</a>
+                    {% endif %}
+                </div>
+            </nav>
+        </header>
+    {% endblock %}
+
+    <main>
+        {% block content %}
+        {% endblock %}
+    </main>
+
+</body>
+</html>

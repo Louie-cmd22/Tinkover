@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="account-page">
+    <header class="account-header">
+        <p class="eyebrow">Your space</p>
+        <h1>Account</h1>
+    </header>
+
+    <section class="account-section profile-section">
+        <div class="section-heading">
+            <p class="eyebrow">Profile</p>
+            <h2>About you</h2>
+        </div>
+
+        <div class="profile-details">
+            <div class="profile-field">
+                <span class="field-label">Username</span>
+                <strong>{{ user.username }}</strong>
+            </div>
+            <div class="profile-field">
+                <span class="field-label">Member since</span>
+                <strong>{{ user.date_created.strftime("%B %d, %Y") }}</strong>
+            </div>
+        </div>
+
+        <form class="account-form" method="post" action="{{ url_for('logout_user') }}">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+            <button class="btn btn-secondary" type="submit">Logout</button>
+        </form>
+    </section>
+
+    <section class="account-section blogs-section">
+        <div class="section-heading">
+            <p class="eyebrow">Archive</p>
+            <h2>My Blogs</h2>
+        </div>
+
+        {% if user_blogs %}
+            <div class="blog-list compact-blog-list">
+                {% for blog in user_blogs %}
+                    <article class="blog-row">
+                        <time class="post-date" datetime="{{ blog.date_posted.isoformat() }}">
+                            <span class="post-day">{{ blog.date_posted.strftime("%d") }}</span>
+                            <span class="post-month">{{ blog.date_posted.strftime("%b")|upper }}</span>
+                        </time>
+                        <div class="post-summary">
+                            <h3><a href="{{ url_for('blog_page', blog_id=blog.id) }}">{{ blog.title }}</a></h3>
+                            <p>{{ blog.content|truncate(180, True, "...") }}</p>
+                        </div>
+                    </article>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p class="empty-state">You haven't created any blogs yet.</p>
+        {% endif %}
+    </section>
+
+    <section class="account-section danger-section">
+        <div class="section-heading">
+            <p class="eyebrow danger-eyebrow">Danger zone</p>
+            <h2>Delete Account</h2>
+        </div>
+
+        <p class="danger-copy">
+            Deleting your account is permanent.<br>
+            All of your blogs will also be deleted.
+        </p>
+
+        <form class="account-form" method="post" action="{{ url_for('delete_account') }}" onsubmit="return confirm('Are you sure you want to delete your account? All of your blogs will be permanently deleted.');">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+            <button class="btn btn-danger" type="submit">Delete Account</button>
+        </form>
+    </section>
+</div>
+{% endblock %}

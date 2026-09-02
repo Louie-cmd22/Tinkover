@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+
+{% block title %}
+{{ blog.title }}
+{% endblock %}
+
+
+
+{% block content %}
+    <article class="detail-page">
+        {% if error %}
+            <p class="error-message">{{ error }}</p>
+        {% endif %}
+
+        {% if blog %}
+            <a class="back-link" href="{{ url_for('homepage') }}">&larr; Back to all posts</a>
+
+            <div class="detail-topline">
+                <time datetime="{{ blog.date_posted.isoformat() }}">{{ blog.date_posted.strftime("%B %d, %Y") }}</time>
+            </div>
+
+            <h1>{{ blog.title }}</h1>
+            <div class="detail-content">{{ blog.content }}</div>
+
+            {% if user and blog.user_id == user.id %}
+                <div class="article-actions">
+                    <a class="btn btn-secondary btn-small" href="{{ url_for('edit_blog_page', blog_id=blog.id) }}">Edit</a>
+                    <form method="post" action="{{ url_for('delete_blog', blog_id=blog.id) }}" onsubmit="return confirm('Are you sure you want to delete this blog?');">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+                        <button class="btn btn-danger btn-small" type="submit">Delete</button>
+                    </form>
+                </div>
+            {% endif %}
+        {% endif %}
+    </article>
+
+{% endblock %}

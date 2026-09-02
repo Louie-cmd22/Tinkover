@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+
+{% block title %}
+Home
+{% endblock %}
+
+{% block content %}
+    <section class="listing-header">
+        <div>
+            <p class="eyebrow">Journal</p>
+            <h1>Latest posts</h1>
+        </div>
+
+        {% if user %}
+            <a class="btn btn-primary" href="{{ url_for('create_blog_page') }}">Create blog</a>
+        {% endif %}
+    </section>
+
+    {% if blogs %}
+        <section class="blog-list" aria-label="Latest posts">
+            {% for blog in blogs %}
+                <article class="blog-row">
+                    <time class="post-date" datetime="{{ blog.date_posted.isoformat() }}">
+                        <span class="post-day">{{ blog.date_posted.strftime("%d") }}</span>
+                        <span class="post-month">{{ blog.date_posted.strftime("%b")|upper }}</span>
+                    </time>
+                    <div class="post-summary">
+                        <h2><a href="{{ url_for('blog_page', blog_id=blog.id) }}">{{ blog.title }}</a></h2>
+                        <p>{{ blog.content|truncate(220, True, "...") }}</p>
+                    </div>
+                </article>
+            {% endfor %}
+        </section>
+    {% else %}
+        <p class="empty-state">No blogs yet.</p>
+    {% endif %}
+
+{% endblock %}
